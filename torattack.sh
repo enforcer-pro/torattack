@@ -37,7 +37,7 @@ while true; do
 gnome-terminal --tab -- python torshammer/torshammer.py -t $target -p $port -r $threads $tor
 i=$((i+1))
 done
-sleep 10
+sleep 120
 killall python
 done
 }
