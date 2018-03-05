@@ -69,6 +69,4 @@ printf "\e[1;77m DoS testing tool \e[0m \n\n"
 banner
 checkroot
 config
-#printf "\e[1;32m Press Ctrl + C to stop attack \e[0m \n"
-#attack
 
